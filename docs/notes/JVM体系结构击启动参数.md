@@ -16,7 +16,5 @@ JVM启动参数可分为三类：
   * `-XX：+-Flags`形式, `+- `是对布尔值进行开关。
   * ` -XX：key=value`形式, 指定某个选项的值。
 
- 
-
 <div align="center"> <img src="..\..\images\jvm\JVM启动参数.png" width="800px"> </div>
 
