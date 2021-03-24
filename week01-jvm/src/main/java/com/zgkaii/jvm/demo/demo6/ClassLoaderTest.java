@@ -1,9 +1,6 @@
-package com.zgkaii.jvm.demo6;
+package com.zgkaii.jvm.demo.demo6;
 
 import sun.security.ec.CurveDB;
-
-import java.net.URL;
-import java.security.Provider;
 
 /**
  * @Author: Mr.Z

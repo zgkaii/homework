@@ -115,7 +115,7 @@ JVM主要被分为三个子系统：
 
 **缓存加载**：为了提升加载效率，消除重复加载，一旦某个类被一个类加载器加 载，那么它会缓存这个加载结果，不会重复加载。
 
-# 5 JVM 运行时数据区
+# 5 运行时数据区
 
 # 6 执行引擎
 
@@ -131,6 +131,162 @@ JVM启动参数可分为三类：
 
 <div align="center"> <img src="..\..\..\images\jvm\JVM启动参数.png" width="1000px"> </div>
 
+## 7.1 系统属性参数
+
+## 7.2 运行模式参数
+
+**`-server`**：设置 JVM 使用 server 模式，特点是启动速度比较慢，但运行时性能和内存管理效率 很高，适用于生产环境。在具有 64 位能力的 JDK 环境下将默认启用该模式，而忽略 -client 参 数。
+
+**` -client`** ：JDK1.7 之前在32位的 x86 机器上的默认值是 -client 选项。设置 JVM 使用 client 模 式，特点是启动速度比较快，但运行时性能和内存管理效率不高，通常用于客户端应用程序或 者 PC 应用开发和调试。此外，我们知道 JVM 加载字节码后，可以解释执行，也可以编译成本 地代码再执行，所以可以配置 JVM 对字节码的处理模式。 
+
+**`-Xint`**：在解释模式（interpreted mode）下运行，-Xint 标记会强制 JVM 解释执行所有的字节 码，这当然会降低运行速度，通常低10倍或更多。
+
+**` -Xcomp`**：-Xcomp 参数与-Xint 正好相反，JVM 在第一次使用时会把所有的字节码编译成本地 代码，从而带来最大程度的优化。【注意预热】 
+
+**` -Xmixed`**：-Xmixed 是混合模式，将解释模式和编译模式进行混合使用，有 JVM 自己决定，这 是 JVM 的默认模式，也是推荐模式。 我们使用 java -version 可以看到 mixed mode 等信息。
+
+## 7.3 堆内存设置参数
+
+`-Xmx`, 指定最大堆内存。 如 `-Xmx4g`。这只是限制了 Heap 部分的最大值为 4g。这个内存不包括栈内存，也不包括堆外使用的内存。 
+
+`-Xms`, 指定堆内存空间的初始大小。 如 `-Xms4g`。 而且指定的内存大小，并 不是操作系统实际分配的初始值，而是GC先规划好，用到才分配。 专用服务 器上需要保持 `–Xms` 和 `–Xmx` 一致，否则应用刚启动可能就有好几个 FullGC。 当两者配置不一致时，堆内存扩容可能会导致性能抖动。 
+
+`-Xmn`, 等价于 `-XX:NewSize`，使用 G1 垃圾收集器 不应该 设置该选项，在其他的某些业务场景下可以设置。官方建议设置为 `-Xmx` 的 `1/2 ~ 1/4`。 
+
+`-XX：MaxPermSize=size`, 这是 JDK1.7 之前使用的。Java8 默认允许的 Meta空间无限大，此参数无效。 
+
+`-XX：MaxMetaspaceSize=size`， Java8 默认不限制 Meta 空间，一般不允许 设置该选项。 
+
+`-XX：MaxDirectMemorySize=size`，系统可以使用的最大堆外内存，这个参 数跟 `-Dsun.nio.MaxDirectMemorySize` 效果相同。 
+
+`-Xss`， 设置每个线程栈的字节数，影响栈的深度。 例如 `-Xss1m` 指定线程栈为 1MB，与`-XX:ThreadStackSize=1m` 等价。
+
+## 7.4 GC设置参数
+
+`-XX：+UseG1GC`：使用 G1 垃圾回收器 
+
+`-XX：+UseConcMarkSweepGC`：使用 CMS 垃圾回收器 
+
+`-XX：+UseSerialGC`：使用串行垃圾回收器 
+
+`-XX：+UseParallelGC`：使用并行垃圾回收器 
+
+// Java 11+ `-XX：+UnlockExperimentalVMOptions  -XX:+UseZGC` 
+
+// Java 12+ `-XX：+UnlockExperimentalVMOptions -XX:+UseShenandoahGC`
+
+## 7.5 分析诊断参数
+
+`-XX：+-HeapDumpOnOutOfMemoryError` 选项，当 OutOfMemoryError 产生，即内存溢出（堆内存或持久代) 时，自动 Dump 堆内存。 示例用法： java -XX:+HeapDumpOnOutOfMemoryError -Xmx256m ConsumeHeap 
+
+`-XX：HeapDumpPath` 选项，与 HeapDumpOnOutOfMemoryError 搭配使用，指定内存溢出时 Dump 文件的 目录。 如果没有指定则默认为启动 Java 程序的工作目录。 示例用法： java -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=/usr/local/ ConsumeHeap 自动 Dump 的 hprof 文件会存储到 /usr/local/ 目录下。 
+
+`-XX：OnError` 选项，发生致命错误时（fatal error）执行的脚本。 例如, 写一个脚本来记录出错时间, 执行一些命令，或者 curl 一下某个在线报警的 url。 示例用法：java -XX:OnError="gdb - %p" MyApp 可以发现有一个 %p 的格式化字符串，表示进程 PID。 
+
+`-XX：OnOutOfMemoryError` 选项，抛出 OutOfMemoryError 错误时执行的脚本。 -XX：ErrorFile=filename 选项，致命错误的日志文件名,绝对路径或者相对路径。 
+
+`-Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=1506`，远程调试。
+
+## 7.6 JavaAgent参数
+
+`-agentlib:libname[=options] `启用 native 方式的 agent，参考 LD_LIBRARY_PATH 路径。
+
+ `-agentpath:pathname[=options]` 启用 native 方式的 agent。 
+
+`-javaagent:jarpath[=options]` 启用外部的 agent 库，比如 pinpoint.jar 等等。 
+
+`-Xnoagent` 则是禁用所有 agent。 以下示例开启 CPU 使用时间抽样分析： 
+
+* `JAVA_OPTS="-agentlib:hprof=cpu=samples,file=cpu.samples.log"`
+
 # 8 JVM工具
 
-# 9 垃圾收集器
+## JVM内置命令行工具
+
+| 工具           | 简介                                                         |
+| -------------- | ------------------------------------------------------------ |
+| java           | Java 应用的启动程序                                          |
+| javac          | JDK 内置的编译工具                                           |
+| javap          | 反编译 class 文件的工具                                      |
+| javadoc        | 根据 Java 代码和标准注释,自动生成相关的 API 说明文档         |
+| javah          | JNI 开发时, 根据 java 代码生成需要的 .h文件                  |
+| extcheck       | 检查某个 jar 文件和运行时扩展 jar 有没有版本冲突，很少使用   |
+| jdb            | Java Debugger ; 可以调试本地和远端程序，属于 JPDA 中的一个 demo 实现，供其 他调试器参考。开发时很少使用 |
+| jdeps          | 探测 class 或 jar 包需要的依赖                               |
+| jar            | 打包工具，可以将文件和目录打包成为 .jar 文件；.jar 文件本质上就是 zip 文件, 只 是后缀不同。使用时按顺序对应好选项和参数即可 |
+| keytool        | 安全证书和密钥的管理工具; （支持生成、导入、导出等操作）     |
+| jarsigner      | JAR 文件签名和验证工具                                       |
+| policytool     | 实际上这是一款图形界面工具, 管理本机的 Java 安全策略         |
+| jps/jinfo      | 查看 java 进程                                               |
+| jstat          | 查看 JVM 内部 gc 相关信息                                    |
+| jmap           | 查看 heap 或类占用空间统计                                   |
+| jstack         | 查看线程信息                                                 |
+| jcmd           | 执行 JVM 相关分析命令（整合命令）                            |
+| jrunscript/jjs | 执行 js 命令                                                 |
+
+**jstat**
+
+```shell
+> jstat -options 
+-class 类加载(Class loader)信息统计 
+-compiler JIT 即时编译器相关的统计信息 
+-gc GC 相关的堆内存信息。 用法: jstat -gc -h 10 -t 864 1s 20 
+-gccapacity 各个内存池分代空间的容量 
+-gccause 看上次 GC，本次 GC（如果正在 GC 中）的原因， 其他 输出和 -gcutil 选项一致 
+-gcnew 年轻代的统计信息。（New = Young = Eden + S0 + S1） 
+-gcnewcapacity 年轻代空间大小统计 
+-gcold 老年代和元数据区的行为统计 
+-gcoldcapacity old 空间大小统计 
+-gcmetacapacity meta 区大小统计 
+-gcutil GC 相关区域的使用率（utilization）统计 
+-printcompilation 打印 JVM 编译统计信息
+```
+
+**jmap**
+
+```shell
+-heap 打印堆内存（/内存池）的配置和 使用信息。
+-histo 看哪些类占用的空间最多, 直方图。
+-dump:format=b,file=xxxx.hprof Dump 堆内存
+```
+
+**jstack**
+
+```shell
+-F 强制执行 thread dump，可在 Java 进程卡死 （hung 住）时使用，此选项可能需要系统权限。 
+-m 混合模式（mixed mode)，将 Java 帧和 native 帧一起输出，此选项可能需要系统权限。 
+-l 长列表模式，将线程相关的 locks 信息一起输 出，比如持有的锁，等待的锁。
+```
+
+**jcmd**
+
+```shell
+jcmd pid VM.version
+jcmd pid VM.flags
+jcmd pid VM.command_line
+jcmd pid VM.system_properties
+jcmd pid Thread.print
+jcmd pid GC.class_histogram
+jcmd pid GC.heap_info
+```
+
+**jrunscript/jjs**
+
+```shell
+当 curl 命令用：
+jrunscript -e "cat('http://www.baidu.com')"
+执行 js 脚本片段
+jrunscript -e "print('hello,kk.jvm'+1)"
+执行 js 文件
+jrunscript -l js -f /XXX/XXX/test.js
+```
+
+## JDK 内置图形化工具
+
+**jconsole**
+
+**jvisualvm**
+
+**VisualGC**
+
+**jmc**
