@@ -24,12 +24,17 @@ import static io.netty.handler.codec.http.HttpVersion.HTTP_1_1;
  * @Description:
  */
 public class EchoServerHandler extends ChannelInboundHandlerAdapter {
-
+    /**
+     * 通知ChannelInboundHandler最后一次对channelRead()的调用是当前批量读取中的最后一条消息
+     */
     @Override
     public void channelReadComplete(ChannelHandlerContext ctx) {
         ctx.flush();
     }
 
+    /**
+     * 对于每个传入的消息都要调用
+     */
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws IOException {
         long startTime = System.currentTimeMillis();
@@ -45,13 +50,14 @@ public class EchoServerHandler extends ChannelInboundHandlerAdapter {
                 handlerTest(fullRequest, ctx, "Hello,Everyone!");
             }
         } finally {
+            // 如果extends SimpleChannelInboundHandler 就不需要显示地release
             ReferenceCountUtil.release(msg);
         }
-        //logger.info("channelRead流量接口请求结束，时间为{}", System.currentTimeMillis() - startTime);
+        // logger.info("channelRead流量接口请求结束，时间为{}", System.currentTimeMillis() - startTime);
     }
 
     private void handlerTest(FullHttpRequest fullRequest, ChannelHandlerContext ctx, String body) {
-        //long startTime = System.currentTimeMillis();
+        // long startTime = System.currentTimeMillis();
         FullHttpResponse response = null;
         try {
             String value = body;
@@ -73,6 +79,15 @@ public class EchoServerHandler extends ChannelInboundHandlerAdapter {
                 }
             }
         }
+    }
+
+    /**
+     * —在读取操作期间，有异常抛出时会调用
+     */
+    @Override
+    public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
+        cause.printStackTrace();
+        ctx.close();
     }
 
     /**
@@ -103,11 +118,5 @@ public class EchoServerHandler extends ChannelInboundHandlerAdapter {
                 }
             }
         }
-    }
-
-    @Override
-    public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
-        cause.printStackTrace();
-        ctx.close();
     }
 }

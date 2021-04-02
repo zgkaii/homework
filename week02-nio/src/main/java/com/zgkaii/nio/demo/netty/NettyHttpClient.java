@@ -1,15 +1,15 @@
 package com.zgkaii.nio.demo.netty;
 
 import io.netty.bootstrap.Bootstrap;
-import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
-import io.netty.channel.*;
+import io.netty.channel.ChannelFuture;
+import io.netty.channel.ChannelInitializer;
+import io.netty.channel.ChannelPipeline;
+import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
-import io.netty.util.CharsetUtil;
-
-import java.net.InetSocketAddress;
+import io.netty.handler.codec.http.HttpClientCodec;
+import io.netty.handler.codec.http.HttpContentDecompressor;
 
 /**
  * @Author: Mr.Z
@@ -35,13 +35,18 @@ public class NettyHttpClient {
                         @Override
                         public void initChannel(SocketChannel ch) throws Exception {
                             ChannelPipeline p = ch.pipeline();
+                            // 添加解码器
+                            p.addLast("codec", new HttpClientCodec());
+                            p.addLast("decompressor",
+                                    new HttpContentDecompressor());
                             p.addLast(new EchoClientHandler());
                         }
                     });
             // 6.连接到远程节点，阻塞等待直到连接完成
             ChannelFuture f = b.connect(HOST, PORT).sync();
             // 7.阻塞，直到Channel 关闭
-            f.channel().closeFuture().sync();
+            f.channel().closeFuture();
+            System.out.println(f.isSuccess());
         } finally {
             // 8.关闭线程池并且释放所有的资源
             group.shutdownGracefully();
