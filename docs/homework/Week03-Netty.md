@@ -121,3 +121,24 @@ hello,nio2
 # 作业3
 
 **题目描述**：实现过滤器。
+
+```java
+public class MyHttpRequestFilter implements HttpRequestFilter {
+    @Override
+    public void filter(final FullHttpRequest fullRequest, ChannelHandlerContext ctx) {
+        String uri = fullRequest.uri();
+        System.out.println("接收到的请求url: " + uri);
+        if (!uri.contains("/hello")) {
+            DefaultFullHttpResponse response = new DefaultFullHttpResponse(HTTP_1_1, NOT_FOUND);
+            ctx.write(response);
+            ctx.flush();
+            ctx.close();
+        }
+        HttpHeaders headers = fullRequest.headers();
+        if (headers == null) {
+            headers = new DefaultHttpHeaders();
+        }
+        headers.add("proxy-tag", this.getClass().getSimpleName());
+    }
+}
+```

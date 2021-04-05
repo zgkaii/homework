@@ -39,7 +39,7 @@ public class HttpInboundHandler extends ChannelInboundHandlerAdapter {
 //            if (uri.contains("/test")) {
 //                handlerTest(fullRequest, ctx);
 //            }
-    
+            // 调用Request过滤器
             handler.handle(fullRequest, ctx, filter);
     
         } catch(Exception e) {
