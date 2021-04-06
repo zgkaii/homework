@@ -9,9 +9,9 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>com.zgkaii</groupId>
-    <artifactId>week03-concurreny</artifactId>
+    <artifactId>week04-concurrency</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>week03-concurreny</name>
+    <name>week04-concurrency</name>
     <description>Demo project for Spring Boot</description>
     <properties>
         <java.version>1.8</java.version>
