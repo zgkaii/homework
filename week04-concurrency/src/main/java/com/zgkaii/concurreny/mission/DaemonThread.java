@@ -8,18 +8,15 @@ package com.zgkaii.concurreny.mission;
 public class DaemonThread {
     public static void main(String[] args) {
         Thread thread = new Thread(new DaemonRunner(), "DaemonRunner");
-        thread.setDaemon(true);// 调用setDaemon(true)把该线程标记为守护线程
+        thread.setDaemon(false);// 调用setDaemon(true)把该线程标记为守护线程
         thread.start();
     }
 
     static class DaemonRunner implements Runnable {
         @Override
         public void run() {
-            try {
-                Thread.sleep(10);
-            } catch (InterruptedException e) {
-                System.out.println("DaemonThread finally run ...");
-            }
+            Mark.mark();
+            System.out.println("Thread finally run ...");
         }
     }
 }
