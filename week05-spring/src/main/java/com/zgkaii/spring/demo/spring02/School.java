@@ -1,5 +1,7 @@
 package com.zgkaii.spring.demo.spring02;
 
+import com.zgkaii.spring.demo.aop.ISchool;
+import com.zgkaii.spring.demo.spring01.Student;
 import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
 

@@ -1,6 +1,6 @@
 package com.zgkaii.spring.demo.springjms;
 
-import io.kimmking.spring01.Student;
+import com.zgkaii.spring.demo.spring01.Student;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
@@ -14,7 +14,7 @@ public class JmsSender {
         
         SendService sendService = (SendService)context.getBean("sendService");
         
-        sendService.send(student2);
+//        sendService.send(student2);
         
         System.out.println("send successfully, please visit http://localhost:8161/admin to see it");
     }

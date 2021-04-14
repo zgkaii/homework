@@ -1,6 +1,6 @@
 package com.zgkaii.spring.demo.spring02;
 
-import io.kimmking.spring01.Student;
+import com.zgkaii.spring.demo.spring01.Student;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.stereotype.Component;

@@ -1,7 +1,7 @@
 package com.zgkaii.spring.demo.spring02;
 
-import io.kimmking.aop.ISchool;
-import io.kimmking.spring01.Student;
+import com.zgkaii.spring.demo.aop.ISchool;
+import com.zgkaii.spring.demo.spring01.Student;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 

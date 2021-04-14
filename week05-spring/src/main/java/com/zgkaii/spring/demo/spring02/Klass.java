@@ -1,6 +1,6 @@
 package com.zgkaii.spring.demo.spring02;
 
-import io.kimmking.spring01.Student;
+import com.zgkaii.spring.demo.spring01.Student;
 import lombok.Data;
 
 import java.util.List;

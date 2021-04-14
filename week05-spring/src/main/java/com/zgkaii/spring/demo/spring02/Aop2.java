@@ -11,7 +11,7 @@ import org.aspectj.lang.annotation.Pointcut;
 @Aspect
 public class Aop2 {
     
-    @Pointcut(value="execution(* io.kimmking.*.Klass.*dong(..))")
+    @Pointcut(value="execution(* com.zgkaii.spring.demo.*.Klass.*dong(..))")
     public void point(){
         
     }
