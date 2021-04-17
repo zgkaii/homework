@@ -19,6 +19,7 @@ public class SendService {
     public void send(final Student user) {
         jmsTemplate.send("test.queue", new MessageCreator() {
 
+            @Override
             public Message createMessage(Session session) throws JMSException {
                 return session.createObjectMessage(JSON.toJSONString(user));
             }

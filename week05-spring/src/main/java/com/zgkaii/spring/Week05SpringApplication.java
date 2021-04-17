@@ -9,5 +9,4 @@ public class Week05SpringApplication {
     public static void main(String[] args) {
         SpringApplication.run(Week05SpringApplication.class, args);
     }
-
 }
