@@ -1,4 +1,4 @@
-package com.zgkaii.nio.mission.mission6;
+package com.zgkaii.nio.mission;
 
 import okhttp3.OkHttpClient;
 import okhttp3.Request;

@@ -1,4 +1,4 @@
-package com.zgkaii.nio.mission.mission6;
+package com.zgkaii.nio.mission;
 
 import org.apache.http.*;
 import org.apache.http.client.methods.CloseableHttpResponse;
