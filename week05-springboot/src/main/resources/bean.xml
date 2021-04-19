@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+            http://www.springframework.org/schema/beans/spring-beans.xsd
+            http://www.springframework.org/schema/context
+            http://www.springframework.org/schema/context/spring-context.xsd
+            http://www.springframework.org/schema/tx
+            http://www.springframework.org/schema/tx/spring-tx.xsd
+            http://www.springframework.org/schema/aop
+            http://www.springframework.org/schema/aop/spring-aop.xsd">
+
+    <!-- 配置Hikari数据源 -->
+    <bean id="dataSource" class="com.zaxxer.hikari.HikariDataSource" destroy-method="close">
+        <property name="driverClassName" value="com.mysql.cj.jdbc.Driver"/>
+        <property name="jdbcUrl" value="jdbc:mysql://localhost:3306/mydatabase"/>
+        <property name="username" value="root"/>
+        <property name="password" value="513701"/>
+        <!-- 等待连接池分配连接的最大时长(毫秒), 超过这个时长还没可用的连接则发生SQLException, 缺省:30秒 -->
+        <property name="connectionTimeout" value="30000"/>
+        <!-- 一个连接idle状态的最大时长(毫秒), 超时则被释放(retired), 缺省:10分钟 -->
+        <property name="idleTimeout" value="600000"/>
+        <!-- 一个连接的生命时长(毫秒), 超时而且没被使用则被释放, 缺省:30分钟, 建议设置比数据库超时时长少30秒, 参考MySQL wait_timeout参数(show variables like '%timeout%';) -->
+        <property name="maxLifetime" value="1800000"/>
+        <!-- 最小空闲数 为了最大限度地提高性能和响应速度，我们建议不要设置此值 -->
+        <!--<property name="minimumIdle" value="5" />-->
+        <!-- 连接池中允许的最大连接数。缺省值: 10; 推荐的公式: ((core_count * 2) + effective_spindle_count) -->
+        <property name="maximumPoolSize" value="10"/>
+        <!-- 连接只读数据库时配置为true, 保证安全 -->
+        <property name="readOnly" value="false"/>
+    </bean>
+
+    <!--    &lt;!&ndash; 配置本地MySQL数据源，读取properties文件信息 &ndash;&gt;-->
+    <!--    <bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">-->
+    <!--        <property name="driverClassName" value="com.mysql.cj.jdbc.Driver"></property>-->
+    <!--        <property name="url" value="jdbc:mysql://localhost:3306/mydatabase"></property>-->
+    <!--        <property name="username" value="root"></property>-->
+    <!--        <property name="password" value="513701"></property>-->
+    <!--    </bean>-->
+    <!-- 配置jdbc模板 -->
+    <bean id="jdbcTemplate" class="org.springframework.jdbc.core.JdbcTemplate">
+        <property name="dataSource" ref="dataSource"/>
+    </bean>
+    <!-- 配置dao -->
+    <bean id="accountDao" class="com.zgakii.springboot.jdbc.dao.impl.AccountDaoImpl">
+        <property name="jdbcTemplate" ref="jdbcTemplate"/>
+    </bean>
+    <!-- 配置service -->
+    <bean id="accountService" class="com.zgakii.springboot.jdbc.service.impl.AccountServiceImpl">
+        <property name="accountDao" ref="accountDao"/>
+    </bean>
+
+    <!-- 事务管理器，依赖于数据源 -->
+    <bean id="txManager"
+          class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <property name="dataSource" ref="dataSource"/>
+    </bean>
+    <!-- 注册事务管理驱动 -->
+    <tx:annotation-driven transaction-manager="txManager"/>
+</beans>
