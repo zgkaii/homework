@@ -1,0 +1,17 @@
+mysql:
+  datasource:
+    #读库数目
+    num: 1
+    type-aliases-package: com.zgkaii.mysql.mission09.entity
+    mapper-locations: classpath:/mapper/*.xml
+    config-location: classpath:/mybatis-config.xml
+    write:
+      url: jdbc:mysql://localhost:3316/db?useUnicode=true&characterEncoding=utf8&allowMultiQueries=true
+      username: root
+      password: 513701
+      driver-class-name: com.mysql.cj.jdbc.Driver
+    read:
+      url: jdbc:mysql://localhost:3326/db?useUnicode=true&characterEncoding=utf8&allowMultiQueries=true
+      username: root
+      password: 513701
+      driver-class-name: com.mysql.cj.jdbc.Driver

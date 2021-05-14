@@ -1,4 +1,4 @@
-package com.zgkaii.mysql;
+package com.zgkaii.mysql.mission02;
 
 import java.math.BigDecimal;
 import java.sql.*;
