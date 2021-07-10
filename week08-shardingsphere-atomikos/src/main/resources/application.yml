@@ -1,0 +1,13 @@
+mybatis-plus:
+  mapper-locations: classpath*:/mapper/*.xml
+  typeAliasesPackage: com.example.demo.dao
+  global-config:
+    id-type: 1
+    field-strategy: 2
+    db-column-underline: true
+    refresh-mapper: true
+  configuration:
+    map-underscore-to-camel-case: true
+    cache-enabled: false
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+

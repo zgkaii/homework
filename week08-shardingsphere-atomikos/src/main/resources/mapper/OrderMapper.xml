@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zgkaii.atomikos.mapper.OrderMapper">
+
+    <insert id="insert" parameterType="com.zgkaii.atomikos.entity.Order">
+        INSERT INTO t_order_0(order_id,user_id) VALUES (#{orderId},#{userId})
+    </insert>
+</mapper>
